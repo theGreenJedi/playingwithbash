@@ -71,9 +71,4 @@ while (( turns < 9 )); do
     if (( turns < 9 )); then
         echo "Computer's turn:"
         computer_turn
-        turns=$((turns + 1))
-        if check_winner "O"; then
-            print_board
-            echo "Sorry, you lost."
-            exit 0
-        fi
+        turns

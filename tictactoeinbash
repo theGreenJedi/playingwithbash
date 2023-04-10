@@ -1,18 +1,53 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Initialize the board
-board=(" " " " " " " " " " " " " " " " ")
+board=(" " " " " " " " " " " " " " " ")
 
 # Function to print the board
 print_board() {
-    echo " ${board[0]} | ${board[1]} | ${board[2]} "
+    printf " %s | %s | %s\n" "${board[0]}" "${board[1]}" "${board[2]}"
     echo "---------"
-    echo " ${board[3]} | ${board[4]} | ${board[5]} "
+    printf " %s | %s | %s\n" "${board[3]}" "${board[4]}" "${board[5]}"
     echo "---------"
-    echo " ${board[6]} | ${board[7]} | ${board[8]} "
+    printf " %s | %s | %s\n" "${board[6]}" "${board[7]}" "${board[8]}"
 }
 
-# ... (rest of the script is unchanged)
+player_turn() {
+    while true; do
+        echo -n "Enter your move (row col): "
+        read -r row col
+        idx=$((3 * (row - 1) + (col - 1)))
+        if [[ "${board[idx]}" == " " ]]; then
+            board[idx]="X"
+            break
+        else
+            echo "Invalid move. Please try again."
+        fi
+    done
+}
+
+computer_turn() {
+    while true; do
+        idx=$((RANDOM % 9))
+        if [[ "${board[idx]}" == " " ]]; then
+            board[idx]="O"
+            break
+        fi
+    done
+}
+
+check_winner() {
+    player=$1
+    for i in {0..2}; do
+        if [[ "${board[3 * i]}" == "$player" && "${board[3 * i + 1]}" == "$player" && "${board[3 * i + 2]}" == "$player" ]] || \
+           [[ "${board[i]}" == "$player" && "${board[i + 3]}" == "$player" && "${board[i + 6]}" == "$player" ]] || \
+           [[ "${board[0]}" == "$player" && "${board[4]}" == "$player" && "${board[8]}" == "$player" ]] || \
+           [[ "${board[2]}" == "$player" && "${board[4]}" == "$player" && "${board[6]}" == "$player" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
 
 # Game loop
 turns=0
